@@ -8,6 +8,7 @@ import Suppliers from './pages/suppliers.tsx';
 import Categories from './pages/categories.tsx';
 
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -16,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path='/clients' element={<Clients />} />
         </Routes>
         <Routes>
-          <Route path='/' element={<Clients />} />
+          <Route path='/' element={<Products />} />
         </Routes>
         <Routes>
           <Route path='/categories' element={<Categories />} />
