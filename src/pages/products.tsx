@@ -7,15 +7,13 @@ import NavBar from '../components/NavBar';
 
 function Products() {
 
-
     return (
         <>
             <header>
-                <h1>CATEGORIES</h1>
+                <h1>PRODUCTS</h1>
             </header>
             <NavBar />
-            <MainTable url={'categories'} />
-
+            <MainTable url={'products'} />
         </>
     )
 }

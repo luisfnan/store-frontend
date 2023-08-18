@@ -7,16 +7,14 @@ import NavBar from '../components/NavBar';
 
 function Clients() {
 
-
     return (
         <>
             <header>
-                <h1>CATEGORIES</h1>
+                <h1>CLIENTS</h1>
             </header>
 
             <NavBar />
-            <MainTable url={'categories'} />
-
+            <MainTable url={'profile'} />
         </>
     )
 }

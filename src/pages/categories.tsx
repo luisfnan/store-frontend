@@ -14,7 +14,6 @@ function Categories() {
             </header>
             <NavBar />
             <MainTable url={'categories'} />
-
         </>
     )
 }

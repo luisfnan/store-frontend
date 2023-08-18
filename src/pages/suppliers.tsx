@@ -6,17 +6,14 @@ import NavBar from '../components/NavBar';
 
 
 function Suppliers() {
-
-
     return (
         <>
             <header>
-                <h1>CATEGORIES</h1>
+                <h1>SUPPLIERS</h1>
             </header>
 
             <NavBar />
-            <MainTable url={'categories'} />
-
+            <MainTable url={'suppliers'} />
         </>
     )
 }

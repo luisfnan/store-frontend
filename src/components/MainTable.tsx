@@ -7,8 +7,29 @@ import '../App.css'
 interface Info {
     url: String
 }
+interface Filtered {
+    name1?: string;
+    name2?: string;
+}
 
 function MainTable(props: Info) {
+
+
+
+    let valuesToBeFiltered: Filtered;
+
+    if (props.url === 'products') {
+        valuesToBeFiltered = { name1: 'supplierID', name2: 'category' }
+
+    } else if (props.url === 'suppliers') {
+        valuesToBeFiltered = { name1: ' ', name2: ' ' }
+    } else if (props.url === 'profile') {
+        valuesToBeFiltered = { name1: ' ', name2: 'password' }
+    } else if (props.url === 'categories') {
+        valuesToBeFiltered = { name1: ' ', name2: 'product' }
+    } else {
+        console.log(props.url, ": is not a vail endpoint")
+    }
 
     const [tableInfo, setTableInfo] = useState([])
 
@@ -30,7 +51,7 @@ function MainTable(props: Info) {
 
     let objectKeys: Column[] = []
     if (tableInfo[0]) {
-        objectKeys = Object.keys(tableInfo[0]).filter((key) => key !== "product").map((key) => {
+        objectKeys = Object.keys(tableInfo[0]).filter((key) => key !== valuesToBeFiltered.name2).map((key) => {
             return {
                 Header: key,
                 accessor: key,
