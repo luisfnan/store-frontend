@@ -4,15 +4,11 @@ import { useTable, Column, Hooks } from "react-table";
 import '../App.css'
 
 
-
 interface Info {
     url: String
 }
 
-
 function MainTable(props: Info) {
-
-
 
     const [tableInfo, setTableInfo] = useState([])
 
