@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useTable, Column, Hooks } from "react-table";
 import '../App.css'
 import { getTableInfo } from "../services/getTableInfo";
+import { putTableInfo } from "../services/putTableInfo";
 
 
 interface Info {
@@ -17,14 +18,6 @@ interface Edit {
     editedValues: any;
 }
 
-const [tableInfo, setTableInfo] = useState([]);
-const [isEditing, setIsEditing] = useState(false);
-const [editState, setEditState] = useState<Edit>({
-    rowIndex: null,
-    editedValues: {},
-});
-
-
 
 function capitalizeFirstLetter(input: string): string {
 
@@ -35,6 +28,13 @@ function capitalizeFirstLetter(input: string): string {
 }
 
 function MainTable(props: Info) {
+
+    const [tableInfo, setTableInfo] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editState, setEditState] = useState<Edit>({
+        rowIndex: null,
+        editedValues: {},
+    });
 
     useEffect(() => {
         getTableInfo(props.url)
@@ -186,11 +186,13 @@ function MainTable(props: Info) {
 
                                                         {cellIndex === row.cells.length - 1 && (
                                                             <button className="save-btn" onClick={() => {
+                                                                putTableInfo(props.url, editState.editedValues)
                                                                 setIsEditing(false);
                                                                 setEditState({
                                                                     rowIndex: null,
                                                                     editedValues: {},
                                                                 });
+                                                                console.log(editState.editedValues)
                                                             }}
                                                             >
                                                                 <img className="list-image-[url(checkmark.png)] " src="/save.svg" alt="save" />
