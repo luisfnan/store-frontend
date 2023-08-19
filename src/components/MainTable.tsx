@@ -41,7 +41,7 @@ function MainTable(props: Info) {
             .then((data) => {
                 console.log('Categories: ', data)
                 setTableInfo(data);
-            });
+            }).catch(err => console.log(err));
 
     }, []);
 
