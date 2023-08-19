@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
 import { useTable, Column, Hooks } from "react-table";
 import '../App.css'
+import { getTableInfo } from "../services/getTableInfo";
 
 
 interface Info {
@@ -17,6 +17,15 @@ interface Edit {
     editedValues: any;
 }
 
+const [tableInfo, setTableInfo] = useState([]);
+const [isEditing, setIsEditing] = useState(false);
+const [editState, setEditState] = useState<Edit>({
+    rowIndex: null,
+    editedValues: {},
+});
+
+
+
 function capitalizeFirstLetter(input: string): string {
 
     const firstLetter = input.charAt(0).toUpperCase();
@@ -26,6 +35,15 @@ function capitalizeFirstLetter(input: string): string {
 }
 
 function MainTable(props: Info) {
+
+    useEffect(() => {
+        getTableInfo(props.url)
+            .then((data) => {
+                console.log('Categories: ', data)
+                setTableInfo(data);
+            });
+
+    }, []);
 
     let valuesToBeFiltered: Filtered;
 
@@ -42,22 +60,11 @@ function MainTable(props: Info) {
         console.log(props.url, ": is not a vail endpoint")
     }
 
-    const [tableInfo, setTableInfo] = useState([])
 
-    async function getData() {
-        const response = await axios.get(`https://store-api-l9ki.onrender.com/api/${props.url}`)
-            .catch(err => console.log(err));
 
-        if (response) {
-            const info = response.data;
-            console.log('Categories: ', info)
-            setTableInfo(info);
-        }
-    }
 
-    useEffect(() => {
-        getData();
-    }, []);
+
+
 
 
     let objectKeys: Column[] = []
@@ -72,10 +79,7 @@ function MainTable(props: Info) {
         });
     }
 
-    const [editState, setEditState] = useState<Edit>({
-        rowIndex: null,
-        editedValues: {},
-    });
+
 
     //boton de edit
     const tableHooks = (hooks: Hooks) => {
@@ -85,27 +89,23 @@ function MainTable(props: Info) {
                 id: "Edit",
                 Header: "Edit",
                 Cell: ({ row }) => (
+                    <button className="rounded-full w-7 edit-btn" onClick={() => {
 
-                    isEditing ? <div></div> :
-                        <button className="rounded-full w-7 edit-btn" onClick={() => {
-
-                            if (!isEditing) {
-                                setIsEditing(true);
-                                setEditState({
-                                    rowIndex: row.index,
-                                    editedValues: { ...row.original },
-                                });
-                            } else {
-                                setIsEditing(false);
-                                setEditState({
-                                    rowIndex: null,
-                                    editedValues: {},
-                                });
-                            }
-                        }}> <img className="list-image-[url(checkmark.png)] " src="/edit.png" alt="edit" />
-                        </button>
-
-
+                        if (!isEditing) {
+                            setIsEditing(true);
+                            setEditState({
+                                rowIndex: row.index,
+                                editedValues: { ...row.original },
+                            });
+                        } else {
+                            setIsEditing(false);
+                            setEditState({
+                                rowIndex: null,
+                                editedValues: {},
+                            });
+                        }
+                    }}> <img className="list-image-[url(checkmark.png)] " src="/edit.png" alt="edit" />
+                    </button>
                 ),
             },
         ]);
@@ -123,7 +123,6 @@ function MainTable(props: Info) {
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
-    const [isEditing, setIsEditing] = useState(false);
 
 
 
@@ -156,7 +155,6 @@ function MainTable(props: Info) {
 
                     <tbody className="border border-green-500 p-2" {...getTableBodyProps()}>
                         {
-
                             rows.map((row) => {
                                 prepareRow(row)
 
@@ -205,12 +203,9 @@ function MainTable(props: Info) {
                                     </tr>
                                 )
                             })
-
                         }
                     </tbody>
                 </table>
-
-
             </div>
 
         </>
