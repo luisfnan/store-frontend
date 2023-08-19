@@ -2,6 +2,8 @@ import axios from "axios";
 
 
 export async function putTableInfo(ednPoint: String, objects: any) {
+    const id = objects.id;
+    const user = objects.username;
 
     const categories = {
         name: objects.name,
@@ -17,16 +19,16 @@ export async function putTableInfo(ednPoint: String, objects: any) {
 
     const products = {
         name: objects.name,
-        price: objects.price,
-        stock: objects.stock,
+        price: parseInt(objects.price),
+        stock: parseInt(objects.stock),
     }
 
     let result: string
 
-    if (ednPoint === "categories") {
-        result = JSON.stringify(categories)
-    } else if (ednPoint === "products") {
+    if (ednPoint === "products") {
         result = JSON.stringify(products)
+    } else if (ednPoint === "categories") {
+        result = JSON.stringify(categories)
         console.log(result)
     } else if (ednPoint === "suppliers") {
         result = JSON.stringify(supplier)
@@ -36,8 +38,8 @@ export async function putTableInfo(ednPoint: String, objects: any) {
 
 
 
-    const id = objects.id;
-    const apiUrl = `https://store-api-l9ki.onrender.com/api/${ednPoint}/${id}`
+
+    const apiUrl = `https://store-api-l9ki.onrender.com/api/${ednPoint}/${ednPoint !== 'profile' ? id : user}`
 
 
 

@@ -45,3 +45,18 @@ header {
     background-color: rgb(137, 255, 239);
     text-align: center;
 }
+
+.input-bx {
+    background-color: aqua;
+    border-radius: 9px;
+    border-color: blue;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.container-input {
+    margin-top: 70px;
+    display: flex;
+    justify-content: center;
+
+}

@@ -3,6 +3,8 @@ import { useTable, Column, Hooks } from "react-table";
 import '../App.css'
 import { getTableInfo } from "../services/getTableInfo";
 import { putTableInfo } from "../services/putTableInfo";
+import AddNew from "./AddNewBtn";
+
 
 
 interface Info {
@@ -44,6 +46,7 @@ function MainTable(props: Info) {
             }).catch(err => console.log(err));
 
     }, []);
+
 
     let valuesToBeFiltered: Filtered;
 
@@ -130,9 +133,7 @@ function MainTable(props: Info) {
     return (
 
         <>
-            <nav className="flex sm:justify-center space-x-4 edit">
-                <a href='/edit' className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Add New</a>
-            </nav>
+            <AddNew />
             <div className="containerr">
 
                 <table className="table-fixed text-base text-gray-900" {...getTableProps()}>
@@ -192,7 +193,7 @@ function MainTable(props: Info) {
                                                                     rowIndex: null,
                                                                     editedValues: {},
                                                                 });
-                                                                console.log(editState.editedValues)
+
                                                             }}
                                                             >
                                                                 <img className="list-image-[url(checkmark.png)] " src="/save.svg" alt="save" />
