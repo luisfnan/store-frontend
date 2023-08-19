@@ -12,9 +12,20 @@ interface Filtered {
     name2?: string;
 }
 
+interface Edit {
+    rowIndex: number | null;
+    editedValues: any;
+}
+
+function capitalizeFirstLetter(input: string): string {
+
+    const firstLetter = input.charAt(0).toUpperCase();
+    const restOfTheString = input.slice(1);
+
+    return firstLetter + restOfTheString;
+}
+
 function MainTable(props: Info) {
-
-
 
     let valuesToBeFiltered: Filtered;
 
@@ -52,12 +63,21 @@ function MainTable(props: Info) {
     let objectKeys: Column[] = []
     if (tableInfo[0]) {
         objectKeys = Object.keys(tableInfo[0]).filter((key) => key !== valuesToBeFiltered.name2).map((key) => {
+            const upperCaseHeadder = capitalizeFirstLetter(key);
+
             return {
-                Header: key,
+                Header: upperCaseHeadder,
                 accessor: key,
             }
         });
     }
+
+    const [editState, setEditState] = useState<Edit>({
+        rowIndex: null,
+        editedValues: {},
+    });
+
+    //boton de edit
     const tableHooks = (hooks: Hooks) => {
         hooks.visibleColumns.push((columns) => [
             ...columns,
@@ -65,36 +85,53 @@ function MainTable(props: Info) {
                 id: "Edit",
                 Header: "Edit",
                 Cell: ({ row }) => (
-                    <button className="rounded-full w-7" onClick={() => alert("Editing: " + row.values.price)}>
-                        <img className="list-image-[url(checkmark.png)] " src="/edit.png" alt="edit" />
-                    </button>
+
+                    isEditing ? <div></div> :
+                        <button className="rounded-full w-7 edit-btn" onClick={() => {
+
+                            if (!isEditing) {
+                                setIsEditing(true);
+                                setEditState({
+                                    rowIndex: row.index,
+                                    editedValues: { ...row.original },
+                                });
+                            } else {
+                                setIsEditing(false);
+                                setEditState({
+                                    rowIndex: null,
+                                    editedValues: {},
+                                });
+                            }
+                        }}> <img className="list-image-[url(checkmark.png)] " src="/edit.png" alt="edit" />
+                        </button>
+
+
                 ),
             },
         ]);
     };
 
 
-    const categoryData = useMemo(() => [...tableInfo], [tableInfo])
-    const categoryColumn = useMemo(() => objectKeys, [tableInfo])
+    const bodyData = useMemo(() => [...tableInfo], [tableInfo])
+    const columnData = useMemo(() => objectKeys, [tableInfo])
 
 
     const tableInstance = useTable({
-        columns: categoryColumn,
-        data: categoryData
+        columns: columnData,
+        data: bodyData
     }, tableHooks)
 
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance
 
-    const isEeven = (idx: number) => idx % 2 === 0;
+    const [isEditing, setIsEditing] = useState(false);
+
 
 
 
     return (
+
         <>
-
-
             <nav className="flex sm:justify-center space-x-4 edit">
-
                 <a href='/edit' className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900">Add New</a>
             </nav>
             <div className="containerr">
@@ -119,15 +156,50 @@ function MainTable(props: Info) {
 
                     <tbody className="border border-green-500 p-2" {...getTableBodyProps()}>
                         {
-                            rows.map((row, idx) => {
+
+                            rows.map((row) => {
                                 prepareRow(row)
-                                const isItEven = isEeven(idx) ? `bg-green-400 bg opacity-80` : ``
+
 
                                 return (
-                                    <tr className={`border border-green-500 ${isItEven}`}  {...row.getRowProps()}>
+                                    <tr className={`border border-green-500 `}  {...row.getRowProps()} >
                                         {
-                                            row.cells.map(cell => {
-                                                return <td className="border border-green-500 p-2"{...cell.getCellProps()}>{cell.render('Cell')} </td>
+
+                                            row.cells.map((cell, cellIndex) => {
+                                                return (
+                                                    <td className="border border-green-500 p-2" {...cell.getCellProps()} >
+
+                                                        {editState.rowIndex === row.index && cellIndex !== row.cells.length - 1 ? (
+                                                            <input type="text" className="input-box"
+                                                                value={editState.editedValues[cell.column.id] || cell.value}
+                                                                onChange={(e) =>
+                                                                    setEditState({
+                                                                        ...editState,
+                                                                        editedValues: {
+                                                                            ...editState.editedValues,
+                                                                            [cell.column.id]: e.target.value,
+                                                                        },
+                                                                    })
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            cell.render("Cell")
+                                                        )}
+
+                                                        {cellIndex === row.cells.length - 1 && (
+                                                            <button className="save-btn" onClick={() => {
+                                                                setIsEditing(false);
+                                                                setEditState({
+                                                                    rowIndex: null,
+                                                                    editedValues: {},
+                                                                });
+                                                            }}
+                                                            >
+                                                                <img className="list-image-[url(checkmark.png)] " src="/save.svg" alt="save" />
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                );
                                             })
                                         }
                                     </tr>
